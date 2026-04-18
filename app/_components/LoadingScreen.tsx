@@ -1,4 +1,3 @@
-// components/LoadingScreen.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,7 +14,7 @@ export default function LoadingScreen() {
 
   return (
     <div className="fixed inset-0 bg-[var(--parchment)] flex flex-col items-center justify-center z-[999] gap-4 transition-opacity duration-400">
-      <div className="loading-arabic font-[var(--font-amiri)] text-5xl rtl text-[var(--gold)]">
+      <div className="loading-arabic text-5xl rtl text-[var(--gold)]">
         القرآن الكريم
       </div>
       <div className="loading-text text-sm text-[var(--ink-faint)] tracking-wide">

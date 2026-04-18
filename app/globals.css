@@ -1,30 +1,5 @@
 @import "tailwindcss";
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
-
 @layer base {
   :root {
     --parchment: #fdf8f0;
@@ -43,7 +18,6 @@ body {
     --shadow: 0 4px 24px rgba(26, 18, 9, 0.1);
     --radius: 12px;
     --sidebar-w: 320px;
-    --arabic-font: var(--font-amiri);
     --arabic-size: 26px;
     --trans-size: 16px;
   }
@@ -78,6 +52,8 @@ body {
   }
 
   body {
+    /* Same element as next/font variables — var(--font-*) resolves here */
+    --arabic-font: var(--font-amiri);
     font-family: var(--font-crimson);
     background: var(--parchment);
     color: var(--ink);
@@ -93,7 +69,10 @@ body {
   .s-arabic,
   .bismillah-surah,
   .bismillah-banner,
-  .page-header .arabic-title {
+  .page-header .arabic-title,
+  .surah-ar,
+  .loading-arabic,
+  .logo-icon {
     font-family: var(--arabic-font);
   }
 }

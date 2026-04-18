@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Amiri, Crimson_Pro, Scheherazade_New, Lateef } from "next/font/google";
 import "./globals.css";
+import MainLayoutProvider from "./_components/MainLayoutProvider";
 
 const amiri = Amiri({
   weight: ["400", "700"],
@@ -41,7 +42,7 @@ export default function RootLayout({
       <body
         className={`${amiri.variable} ${scheherazade.variable} ${lateef.variable} ${crimsonPro.variable} antialiased`}
       >
-        {children}
+        <MainLayoutProvider>{children}</MainLayoutProvider>
       </body>
     </html>
   );

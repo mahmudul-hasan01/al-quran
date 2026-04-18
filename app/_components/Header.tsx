@@ -1,53 +1,44 @@
-// components/Header.tsx
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 interface HeaderProps {
-  onShowHome: () => void;
-  onSearch: (query: string) => void;
   onToggleSettings: () => void;
 }
 
-export default function Header({
-  onShowHome,
-  onSearch,
-  onToggleSettings,
-}: HeaderProps) {
+export default function Header({ onToggleSettings }: HeaderProps) {
+  const router = useRouter();
+
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      onSearch((e.target as HTMLInputElement).value);
+      const value = (e.target as HTMLInputElement).value;
+      router.push(`?q=${value}`);
     }
   };
 
   return (
     <header className="sticky top-0 z-[100] bg-[var(--parchment)] border-b border-[var(--border-strong)] px-6 h-[60px] flex items-center justify-between gap-3">
-      <button
-        onClick={onShowHome}
+      <Link
+        href={"/"}
         className="logo flex items-center gap-2.5 flex-shrink-0 cursor-pointer bg-transparent border-none"
       >
-        <div className="logo-icon w-8 h-8 bg-[var(--gold)] rounded-lg flex items-center justify-center text-lg text-white font-[var(--font-amiri)]">
+        <div className="logo-icon w-8 h-8 bg-[var(--gold)] rounded-lg flex items-center justify-center text-lg text-white">
           م
         </div>
         <div className="logo-text text-xl font-semibold tracking-tight text-[var(--ink)]">
           Mush<span className="text-[var(--gold)]">af</span>
         </div>
-      </button>
+      </Link>
 
-      <div className="search-wrap flex-1 max-w-[480px] relative">
+      <div className="search-wrap flex-1 max-w-120 relative">
         <input
           type="text"
           placeholder="Search translations..."
           className="w-full h-[38px] pl-3.5 pr-10 bg-[var(--parchment-dark)] border border-[var(--border)] rounded-full font-[var(--font-crimson)] text-[15px] text-[var(--ink)] outline-none focus:border-[var(--gold)] placeholder:text-[var(--ink-faint)]"
           onKeyDown={handleSearch}
         />
-        <button
-          onClick={(e) => {
-            const input = (
-              e.target as HTMLElement
-            ).parentElement?.querySelector("input");
-            if (input) onSearch(input.value);
-          }}
-          className="search-btn absolute right-2.5 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[var(--ink-muted)] p-1"
-        >
+        <button className="search-btn absolute right-2.5 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[var(--ink-muted)] p-1">
           <svg
             width="16"
             height="16"

@@ -1,4 +1,3 @@
-// components/ScrollTop.tsx
 "use client";
 
 import { useState, useEffect } from "react";

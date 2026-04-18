@@ -1,0 +1,133 @@
+"use client";
+
+import axios from "axios";
+import { useParams, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+interface Verse {
+  id: number;
+  text: string;
+  translation: string;
+}
+
+interface Surah {
+  _id: string;
+  id: number;
+  name: string;
+  transliteration: string;
+  translation: string;
+  type: string;
+  total_verses: number;
+  verses: Verse[];
+}
+
+export default function SurahPage() {
+  const [surah, setSurah] = useState<Surah | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { id } = useParams();
+  const query = useSearchParams();
+  const search = query.get("q");
+
+  useEffect(() => {
+    if (!id) return;
+
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/surahs/${id}`;
+
+    if (search) {
+      url += `?q=${search}`;
+    }
+
+    axios
+      .get(url)
+      .then((res) => {
+        setSurah(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Failed to load surah.");
+      })
+      .finally(() => setLoading(false));
+  }, [id, search]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24 text-[var(--ink-muted)] text-sm tracking-widest uppercase">
+        Loading…
+      </div>
+    );
+  }
+
+  if (error || !surah) {
+    return (
+      <div className="flex items-center justify-center py-24 text-red-500 text-sm">
+        {error ?? "Surah not found."}
+      </div>
+    );
+  }
+
+  return (
+    <div id="page-surah">
+      <div className="surah-hero text-center py-10 px-6 border-b border-[var(--border)] bg-[var(--parchment-dark)]">
+        <div className="s-number text-[13px] tracking-[0.08em] text-[var(--ink-faint)] uppercase mb-2">
+          Surah {surah.id} of 114
+        </div>
+        <div className="s-arabic text-5xl rtl text-[var(--ink)] leading-tight">
+          {surah.name}
+        </div>
+        <div className="s-english text-[22px] text-[var(--ink-muted)] mt-1">
+          {surah.transliteration} · {surah.translation}
+        </div>
+        <div className="s-info mt-3 flex justify-center gap-5">
+          <div className="s-pill bg-[var(--parchment)] border border-[var(--border)] rounded-full px-3.5 py-1 text-[13px] text-[var(--ink-muted)]">
+            Revelation{" "}
+            <span className="text-[var(--gold)] font-semibold capitalize">
+              {surah.type}
+            </span>
+          </div>
+          <div className="s-pill bg-[var(--parchment)] border border-[var(--border)] rounded-full px-3.5 py-1 text-[13px] text-[var(--ink-muted)]">
+            <span className="text-[var(--gold)] font-semibold">
+              {surah.total_verses}
+            </span>{" "}
+            Verses
+          </div>
+        </div>
+      </div>
+
+      {surah.id !== 9 && (
+        <div className="bismillah-surah text-center text-[28px] rtl text-[var(--ink)] py-8 px-6 border-b border-[var(--border)]">
+          بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+        </div>
+      )}
+
+      <div className="ayat-list">
+        {surah?.verses?.map((verse) => (
+          <div
+            key={verse.id}
+            className="ayah-row flex border-b border-[var(--border)] transition-all hover:bg-[var(--gold-faint)]"
+          >
+            <div className="ayah-num-col w-[52px] flex-shrink-0 flex justify-center pt-5 pl-3">
+              <div className="ayah-badge w-8 h-8 border border-[var(--border)] rounded-full flex items-center justify-center text-[14px] text-[var(--ink-faint)] font-[var(--font-crimson)] bg-[var(--parchment)]">
+                {verse.id}
+              </div>
+            </div>
+            <div className="ayah-content flex-1 py-5 pr-6 pl-2 min-w-0">
+              <div
+                className="ayah-arabic rtl text-right leading-[1.9] text-[var(--ink)] mb-3"
+                style={{ fontSize: "var(--arabic-size)" }}
+              >
+                {verse.text}
+              </div>
+              <div
+                className="ayah-translation leading-relaxed text-[var(--ink-muted)] italic"
+                style={{ fontSize: "var(--trans-size)" }}
+              >
+                {verse.translation}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
