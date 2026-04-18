@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -23,4 +23,77 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+} */
+
+@layer base {
+  :root {
+    --parchment: #fdf8f0;
+    --parchment-dark: #f5ead6;
+    --ink: #1a1209;
+    --ink-muted: #5c4a2a;
+    --ink-faint: #a8906a;
+    --gold: #c49a3c;
+    --gold-light: #e8c97a;
+    --gold-faint: #f5e9c8;
+    --teal: #1a5c52;
+    --teal-light: #2a8c7e;
+    --teal-faint: #e0f0ee;
+    --border: rgba(196, 154, 60, 0.25);
+    --border-strong: rgba(196, 154, 60, 0.5);
+    --shadow: 0 4px 24px rgba(26, 18, 9, 0.1);
+    --radius: 12px;
+    --sidebar-w: 320px;
+    --arabic-font: var(--font-amiri);
+    --arabic-size: 26px;
+    --trans-size: 16px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --parchment: #1a1510;
+      --parchment-dark: #231e16;
+      --ink: #f0e6d0;
+      --ink-muted: #c8ad80;
+      --ink-faint: #7a6645;
+      --gold: #d4aa50;
+      --gold-light: #e8c97a;
+      --gold-faint: #2a2010;
+      --teal: #4ab8a8;
+      --teal-light: #6dcebe;
+      --teal-faint: #0d2520;
+      --border: rgba(212, 170, 80, 0.2);
+      --border-strong: rgba(212, 170, 80, 0.4);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-family: var(--font-crimson);
+    background: var(--parchment);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .ayah-arabic,
+  .s-arabic,
+  .bismillah-surah,
+  .bismillah-banner,
+  .page-header .arabic-title {
+    font-family: var(--arabic-font);
+  }
 }
