@@ -4,17 +4,16 @@ A modern, fast, and responsive Quran web application built with Next.js (SSG) an
 
 🚀 Live Demo
 
-🔗 https://your-live-link.vercel.app
+🔗 https://al-quran-snowy.vercel.app
 
-📂 Repository
+Api link: https://al-quran-backend-eta.vercel.app
 
-🔗 https://github.com/your-username/quran-frontend
+Video Link: https://drive.google.com/file/d/1L89aN5HEvWy8Nw_7kj_x-zVg-AJXlt3m/view?usp=sharing
 
 🛠️ Tech Stack
 ⚡ Next.js (Static Site Generation - SSG)
 🎨 Tailwind CSS
-⚛️ React.js
-🌐 REST API (Node.js Backend)
+🌐 REST API (Express.js Backend)
 💾 localStorage (for saving settings)
 ✨ Features
 📜 Surah List
