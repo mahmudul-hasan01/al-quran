@@ -1,4 +1,4 @@
-📖 Quran Web Application – Frontend
+📖 Quran Web Application – Frontend 
 
 A modern, fast, and responsive Quran web application built with Next.js (SSG) and Tailwind CSS. Users can browse all Surahs, read Ayahs with translations, search verses, and customize their reading experience.
 
