@@ -1,8 +1,4 @@
-"use client";
-
-import axios from "axios";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 interface Surah {
   _id: string;
@@ -14,39 +10,20 @@ interface Surah {
   total_verses: number;
 }
 
-export default function HomePage() {
-  const [surahs, setSurahs] = useState<Surah[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+async function getSurahs(): Promise<Surah[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/surahs`, {
+    next: { revalidate: 60 },
+  });
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/surahs`)
-      .then((res) => {
-        setSurahs(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Failed to load surahs.");
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-24 text-[var(--ink-muted)] text-sm tracking-widest uppercase">
-        Loading…
-      </div>
-    );
+  if (!res.ok) {
+    throw new Error("Failed to load surahs.");
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center py-24 text-red-500 text-sm">
-        {error}
-      </div>
-    );
-  }
+  return res.json();
+}
+
+export default async function HomePage() {
+  const surahs = await getSurahs();
 
   return (
     <div id="page-home">
@@ -59,20 +36,22 @@ export default function HomePage() {
         </div>
         <div className="after:content-[''] after:block after:w-[60px] after:h-[2px] after:bg-[var(--gold)] after:mx-auto after:mt-4 after:rounded-full" />
       </div>
+
       <div className="bismillah-banner text-center text-[28px] rtl text-[var(--gold)] py-4 px-6 pb-8">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
       </div>
+
       <div className="surah-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-[var(--border)]">
-        {surahs?.map((surah) => (
+        {surahs.map((surah) => (
           <Link
             href={`/${surah._id}`}
             key={surah._id}
-            // onClick={() => onSelectSurah(surah.id)}
             className="surah-card flex items-center gap-3 py-3.5 px-5 cursor-pointer bg-[var(--parchment)] border-b border-r border-[var(--border)] transition-all hover:bg-[var(--gold-faint)]"
           >
             <div className="surah-num w-[38px] h-[38px] flex-shrink-0 bg-[var(--parchment-dark)] border border-[var(--border)] rounded-full flex items-center justify-center text-[13px] text-[var(--ink-muted)] font-[var(--font-crimson)] font-semibold">
               {surah.id}
             </div>
+
             <div className="surah-info flex-1 min-w-0">
               <div className="surah-en text-[15px] font-semibold text-[var(--ink)]">
                 {surah.transliteration}
@@ -81,6 +60,7 @@ export default function HomePage() {
                 {surah.type} · {surah.total_verses} verses
               </div>
             </div>
+
             <div className="surah-ar text-[22px] rtl text-[var(--gold)] flex-shrink-0">
               {surah.name}
             </div>

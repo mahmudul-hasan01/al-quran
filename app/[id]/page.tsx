@@ -1,8 +1,4 @@
-"use client";
-
-import axios from "axios";
-import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { notFound } from "next/navigation";
 
 interface Verse {
   id: number;
@@ -21,49 +17,39 @@ interface Surah {
   verses: Verse[];
 }
 
-export default function SurahPage() {
-  const [surah, setSurah] = useState<Surah | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { id } = useParams();
-  const query = useSearchParams();
-  const search = query.get("q");
-
-  useEffect(() => {
-    if (!id) return;
-
+async function getSurah(id: string, search?: string): Promise<Surah | null> {
+  try {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/surahs/${id}`;
 
     if (search) {
       url += `?q=${search}`;
     }
 
-    axios
-      .get(url)
-      .then((res) => {
-        setSurah(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Failed to load surah.");
-      })
-      .finally(() => setLoading(false));
-  }, [id, search]);
+    const res = await fetch(url, {
+      next: { revalidate: 60 },
+    });
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-24 text-[var(--ink-muted)] text-sm tracking-widest uppercase">
-        Loading…
-      </div>
-    );
+    if (!res.ok) return null;
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return null;
   }
+}
 
-  if (error || !surah) {
-    return (
-      <div className="flex items-center justify-center py-24 text-red-500 text-sm">
-        {error ?? "Surah not found."}
-      </div>
-    );
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { q?: string };
+}) {
+  const { id } = await params;
+  const surah = await getSurah(id, searchParams?.q);
+
+  if (!surah) {
+    return notFound();
   }
 
   return (
@@ -101,7 +87,7 @@ export default function SurahPage() {
       )}
 
       <div className="ayat-list">
-        {surah?.verses?.map((verse) => (
+        {surah.verses.map((verse) => (
           <div
             key={verse.id}
             className="ayah-row flex border-b border-[var(--border)] transition-all hover:bg-[var(--gold-faint)]"
@@ -111,6 +97,7 @@ export default function SurahPage() {
                 {verse.id}
               </div>
             </div>
+
             <div className="ayah-content flex-1 py-5 pr-6 pl-2 min-w-0">
               <div
                 className="ayah-arabic rtl text-right leading-[1.9] text-[var(--ink)] mb-3"
@@ -118,6 +105,7 @@ export default function SurahPage() {
               >
                 {verse.text}
               </div>
+
               <div
                 className="ayah-translation leading-relaxed text-[var(--ink-muted)] italic"
                 style={{ fontSize: "var(--trans-size)" }}
@@ -131,3 +119,4 @@ export default function SurahPage() {
     </div>
   );
 }
+
