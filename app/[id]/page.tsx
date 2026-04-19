@@ -22,14 +22,17 @@ async function getSurah(id: string, search?: string): Promise<Surah | null> {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/surahs/${id}`;
 
     if (search) {
-      url += `?q=${search}`;
+      url += `?q=${encodeURIComponent(search)}`;
     }
 
     const res = await fetch(url, {
       next: { revalidate: 60 },
     });
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.error("Fetch failed:", res.status, res.statusText);
+      return null;
+    }
 
     return res.json();
   } catch (error) {
@@ -42,15 +45,16 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams: { q?: string };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ q?: string }>;
 }) {
   const { id } = await params;
-  const surah = await getSurah(id, searchParams?.q);
+  const { q } = await searchParams;
+  const query = q ?? "";
 
-  if (!surah) {
-    return notFound();
-  }
+  const surah = await getSurah(id, query);
+
+  if (!surah) return notFound();
 
   return (
     <div id="page-surah">
@@ -119,4 +123,3 @@ export default async function Page({
     </div>
   );
 }
-
